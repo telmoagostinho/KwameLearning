@@ -1,0 +1,28 @@
+<resources>
+    <string name="app_name">MyAlarmClock</string>
+
+    <string name="alarm_list_title">My Alarms</string>
+
+    <string name="alarm_detail_title">Create Alarm</string>
+    <string name="alarm_detail_save">Save</string>
+    <string name="alarm_detail_name_hint">Name</string>
+    <string name="alarm_detail_label_repeat">Repeat days</string>
+    <string name="alarm_detail_label_all_week">All Week</string>
+    <string name="alarm_detail_label_sunday">Sunday</string>
+    <string name="alarm_detail_label_monday">Monday</string>
+    <string name="alarm_detail_label_tuesday">Tuesday</string>
+    <string name="alarm_detail_label_wednesday">Wednesday</string>
+    <string name="alarm_detail_label_thursday">Thursday</string>
+    <string name="alarm_detail_label_friday">Friday</string>
+    <string name="alarm_detail_label_saturday">Saturday</string>
+    <string name="alarm_detail_label_ringtone">Ringtone</string>
+    <string name="alarm_detail_label_ringtone_pick">Pick a ringtone</string>
+    <string name="alarm_detail_label_enabled">Enabled</string>
+    <string name="title_activity_alarm_ringer">AlarmRingerActivity</string>
+
+    <string name="alarm_ringer_title">BUZZZZZ!!!</string>
+    <string name="alarm_ringer_button_text">Turn off</string>
+    <string name="action_settings">Settings</string>
+
+
+</resources>
