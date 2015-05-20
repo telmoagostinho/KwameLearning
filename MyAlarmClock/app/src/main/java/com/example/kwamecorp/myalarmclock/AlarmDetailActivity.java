@@ -113,7 +113,6 @@ public class AlarmDetailActivity extends AppCompatActivity {
 
     //endregion
 
-
     //region Private Methods
 
     private void setLayout()

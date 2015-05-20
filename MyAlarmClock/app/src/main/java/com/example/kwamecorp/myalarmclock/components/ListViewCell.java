@@ -11,12 +11,11 @@ import com.example.kwamecorp.myalarmclock.models.AlarmModel;
 /**
  * Created by kwamecorp on 5/20/15.
  */
-public class ListViewCell extends FrameLayout {
+public class ListViewCell extends FrameLayout{
 
     private TextView textName;
     private TextView textTime;
     private TextView textId;
-
 
     public ListViewCell(Context context) {
         super(context);
@@ -30,7 +29,6 @@ public class ListViewCell extends FrameLayout {
         textName = (TextView) findViewById(R.id.alarm_list_item_name);
         textTime = (TextView) findViewById(R.id.alarm_list_item_time);
         textId = (TextView) findViewById(R.id.alarm_list_item_id);
-
     }
 
     public void setData(AlarmModel alarm)
@@ -39,4 +37,8 @@ public class ListViewCell extends FrameLayout {
         textTime.setText(alarm.getHour() + " : " + alarm.getMinutes());
         textId.setText(String.valueOf(alarm.getId()));
     }
+
+
 }
+
+

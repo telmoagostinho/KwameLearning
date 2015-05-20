@@ -8,9 +8,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TimePicker;
 
+import com.example.kwamecorp.myalarmclock.components.ListViewCell;
 import com.example.kwamecorp.myalarmclock.helpers.AlarmAdapter;
 import com.example.kwamecorp.myalarmclock.helpers.DbHelper;
 import com.example.kwamecorp.myalarmclock.models.AlarmModel;
@@ -50,6 +53,23 @@ public class AlarmListActivity extends  ActionBarActivity {
         adapter = new AlarmAdapter(this, 0);
 
         listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AlarmModel alarmModel = adapter.getItem(position);
+                openAlarmDetail(alarmModel.getId());
+            }
+        });
+
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                AlarmModel alarmModel = adapter.getItem(position);
+                deleteAlarm(alarmModel.getId());
+                return true;
+            }
+        });
 
         reLoadList();
 
