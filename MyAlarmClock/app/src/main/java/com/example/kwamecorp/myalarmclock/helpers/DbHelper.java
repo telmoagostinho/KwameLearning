@@ -70,25 +70,27 @@ public class DbHelper extends SQLiteOpenHelper {
 
     //region Public Methods (CRUD)
 
-    public List<AlarmModel> getAlarms(){
+    public ArrayList<AlarmModel> getAlarms(){
+
+        ArrayList<AlarmModel> alarmModels = new ArrayList<AlarmModel>();
+        String query = "SELECT * FROM " + TABLE_NAME;
 
         SQLiteDatabase db = this.getReadableDatabase();
 
-        String query = "SELECT * FROM " + TABLE_NAME;
+       if(db != null)
+       {
+           Cursor c = db.rawQuery(query, null);
 
-        List<AlarmModel> alarmModels = new ArrayList<AlarmModel>();
+           if(c != null)
+           {
+               while(c.moveToNext())
+               {
+                   alarmModels.add(mapToModel(c));
+               }
+           }
 
-        Cursor c = db.rawQuery(query, null);
-
-        if(c != null)
-        {
-            while(c.moveToNext())
-            {
-                alarmModels.add(mapToModel(c));
-            }
-        }
-
-        c.close();
+           c.close();
+       }
 
         return alarmModels;
     }
@@ -121,16 +123,26 @@ public class DbHelper extends SQLiteOpenHelper {
     {
         ContentValues contentValues = mapToDb(alarmModel);
         SQLiteDatabase db = this.getWritableDatabase();
-        // fechar a DB
-        Log.w("DB", "cheguei aqui");
-        return db.insert(TABLE_NAME, null, contentValues);
+        if (db != null) {
+
+            return db.insert(TABLE_NAME, null, contentValues);
+        }
+
+        return 1; // SQLITE ERROR CODE?
     }
 
     public long updateAlarm(AlarmModel alarmModel)
     {
-        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues contentValues = mapToDb(alarmModel);
-        return db.update(TABLE_NAME, contentValues, COLUMN_NAME_ID + " = ?", new String[] { String.valueOf(alarmModel.getId()) });
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        if (db != null) {
+
+            return db.update(TABLE_NAME, contentValues, COLUMN_NAME_ID + " = ?", new String[]{String.valueOf(alarmModel.getId())});
+        }
+
+        return 1; // SQLITE ERROR CODE?
     }
 
     public int deleteAlarm(int id)

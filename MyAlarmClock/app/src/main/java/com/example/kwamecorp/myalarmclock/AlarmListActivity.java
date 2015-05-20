@@ -15,16 +15,23 @@ import com.example.kwamecorp.myalarmclock.helpers.AlarmAdapter;
 import com.example.kwamecorp.myalarmclock.helpers.DbHelper;
 import com.example.kwamecorp.myalarmclock.models.AlarmModel;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
 public class AlarmListActivity extends  ActionBarActivity {
 
+    //region Constants
+
+    private static final int REQ_CODE_ALARM_DETAIL = 1;
+
+    //endregion
+
     //region Properties
 
     private DbHelper dbHelper = new DbHelper(this);
-    private List<AlarmModel> alarms;
     private AlarmAdapter adapter;
+    private ListView listView;
 
     //endregion
 
@@ -38,12 +45,14 @@ public class AlarmListActivity extends  ActionBarActivity {
 
         getSupportActionBar().setTitle(R.string.alarm_list_title);
 
-        alarms = dbHelper.getAlarms();
+        listView = (ListView) findViewById(R.id.alarm_list_items);
 
-        adapter = new AlarmAdapter(this, alarms);
+        adapter = new AlarmAdapter(this, 0);
 
-        ListView listView = (ListView) findViewById(R.id.alarm_list_items);
         listView.setAdapter(adapter);
+
+        reLoadList();
+
     }
 
     @Override
@@ -65,8 +74,7 @@ public class AlarmListActivity extends  ActionBarActivity {
             Intent intent = new Intent(this,
                     AlarmDetailActivity.class);
             intent.putExtra("id", 0);
-
-            startActivity(intent);
+            startActivityForResult(intent, REQ_CODE_ALARM_DETAIL);
         }
 
         return super.onOptionsItemSelected(item);
@@ -75,33 +83,34 @@ public class AlarmListActivity extends  ActionBarActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        loadList();
+
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            reLoadList();
+        }
     }
 
     //endregion
 
     //region Public Methods
+
     public void openAlarmDetail(int id)
     {
         Intent intent = new Intent(this,
                 AlarmDetailActivity.class);
-
         intent.putExtra("id", id);
-        startActivity(intent);
+        startActivityForResult(intent, REQ_CODE_ALARM_DETAIL);
     }
 
     public void deleteAlarm(int id)
     {
         dbHelper.deleteAlarm(id);
-
-        alarms = dbHelper.getAlarms();
-
-        adapter.setAlarms(alarms);
-
-        adapter.notifyDataSetChanged();
-
-
-
+        reLoadList();
     }
 
     //endregion
@@ -109,13 +118,11 @@ public class AlarmListActivity extends  ActionBarActivity {
 
     //region Private Methods
 
-    private void loadList()
+    private void reLoadList()
     {
-        alarms = dbHelper.getAlarms();
-
-        adapter.setAlarms(alarms);
+        adapter.clear();
+        adapter.addAll(dbHelper.getAlarms());
         adapter.notifyDataSetChanged();
-
     }
 
     //endregion

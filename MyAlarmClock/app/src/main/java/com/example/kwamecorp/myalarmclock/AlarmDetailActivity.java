@@ -38,6 +38,7 @@ public class AlarmDetailActivity extends AppCompatActivity {
     private AlarmModel alarmModel;
 
     //region Layout Items
+
     private TimePicker timePicker;
     private EditText textName;
     private TextView textRingtoneUri;
