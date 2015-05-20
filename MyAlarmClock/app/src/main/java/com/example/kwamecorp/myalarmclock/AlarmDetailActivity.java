@@ -163,7 +163,7 @@ public class AlarmDetailActivity extends AppCompatActivity {
 
         if(alarmModel.getId() > 0)
         {
-            dbHelper.createAlarm(alarmModel);
+            dbHelper.updateAlarm(alarmModel);
         }else
         {
             dbHelper.createAlarm(alarmModel);
@@ -173,16 +173,17 @@ public class AlarmDetailActivity extends AppCompatActivity {
         // Set Alarm Manager - vai passar para outro lado
         Intent i = new Intent(getApplicationContext(), AlarmService.class);
 
-        PendingIntent pi = PendingIntent.getService(getApplicationContext(), 0, i, 0 );
+        PendingIntent pi = PendingIntent.getService(getApplicationContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
 
         AlarmManager am = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
 
-        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pi);
+        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pi); //Colocar o time correcto
 
     }
 
     private void bindModelFromLayout()
     {
+
         alarmModel.setHour(timePicker.getCurrentHour().intValue());
         alarmModel.setMinutes(timePicker.getCurrentMinute().intValue());
         alarmModel.setName(textName.getText().toString());

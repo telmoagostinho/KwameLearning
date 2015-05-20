@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.WindowManager;
 
-
 public class AlarmRingerActivity extends Activity {
 
     private WakeLock mWakeLock;
@@ -19,16 +18,12 @@ public class AlarmRingerActivity extends Activity {
         setContentView(R.layout.activity_alarm_ringer);
     }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
-    }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        // Set the window to keep screen on
+       // Set the window to keep screen on
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED);
@@ -42,10 +37,7 @@ public class AlarmRingerActivity extends Activity {
 
         if (!mWakeLock.isHeld()) {
             mWakeLock.acquire();
-            Log.i("KW", "Wakelock aquired!!");
         }
-
-
     }
 
     @Override
@@ -57,11 +49,5 @@ public class AlarmRingerActivity extends Activity {
         }
     }
 
-    @Override
-    protected void onUserLeaveHint() {
-        super.onUserLeaveHint();
-        if (mWakeLock != null && mWakeLock.isHeld()) {
-            mWakeLock.release();
-        }
-    }
+
 }

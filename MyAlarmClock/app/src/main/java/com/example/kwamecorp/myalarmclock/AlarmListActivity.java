@@ -5,21 +5,27 @@ import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ListView;
 import android.widget.TimePicker;
 
+import com.example.kwamecorp.myalarmclock.helpers.AlarmAdapter;
 import com.example.kwamecorp.myalarmclock.helpers.DbHelper;
 import com.example.kwamecorp.myalarmclock.models.AlarmModel;
 
 import java.util.List;
 
 
-public class AlarmListActivity extends AppCompatActivity {
+public class AlarmListActivity extends  ActionBarActivity {
 
     //region Properties
+
     private DbHelper dbHelper = new DbHelper(this);
     private List<AlarmModel> alarms;
+    private AlarmAdapter adapter;
+
     //endregion
 
 
@@ -31,8 +37,13 @@ public class AlarmListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_alarm_list);
 
         getSupportActionBar().setTitle(R.string.alarm_list_title);
-        loadData();
 
+        alarms = dbHelper.getAlarms();
+
+        adapter = new AlarmAdapter(this, alarms);
+
+        ListView listView = (ListView) findViewById(R.id.alarm_list_items);
+        listView.setAdapter(adapter);
     }
 
     @Override
@@ -61,15 +72,50 @@ public class AlarmListActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        loadList();
+    }
+
+    //endregion
+
+    //region Public Methods
+    public void openAlarmDetail(int id)
+    {
+        Intent intent = new Intent(this,
+                AlarmDetailActivity.class);
+
+        intent.putExtra("id", id);
+        startActivity(intent);
+    }
+
+    public void deleteAlarm(int id)
+    {
+        dbHelper.deleteAlarm(id);
+
+        alarms = dbHelper.getAlarms();
+
+        adapter.setAlarms(alarms);
+
+        adapter.notifyDataSetChanged();
+
+
+
+    }
+
     //endregion
 
 
     //region Private Methods
 
-    private void loadData()
+    private void loadList()
     {
         alarms = dbHelper.getAlarms();
-        // TODO preencher lista
+
+        adapter.setAlarms(alarms);
+        adapter.notifyDataSetChanged();
+
     }
 
     //endregion

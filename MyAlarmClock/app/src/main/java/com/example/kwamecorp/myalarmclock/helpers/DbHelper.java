@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.net.Uri;
+import android.util.Log;
 
 import com.example.kwamecorp.myalarmclock.models.AlarmModel;
 
@@ -42,7 +43,6 @@ public class DbHelper extends SQLiteOpenHelper {
             "DROP TABLE IF EXISTS " + TABLE_NAME;
 
 
-
     //endregion
 
     //region Constructor
@@ -64,7 +64,6 @@ public class DbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL(SQL_DELETE_ALARM_TABLE);
         onCreate(db);
-
     }
 
     //endregion
@@ -79,28 +78,40 @@ public class DbHelper extends SQLiteOpenHelper {
 
         List<AlarmModel> alarmModels = new ArrayList<AlarmModel>();
 
-        Cursor c = db.rawQuery(query,null);
+        Cursor c = db.rawQuery(query, null);
 
-        while(c.moveToNext())
+        if(c != null)
         {
-            alarmModels.add(mapToModel(c));
-
+            while(c.moveToNext())
+            {
+                alarmModels.add(mapToModel(c));
+            }
         }
+
+        c.close();
 
         return alarmModels;
     }
 
-    public AlarmModel getAlarm(long id)
+    public AlarmModel getAlarm(int id)
     {
-        SQLiteDatabase db = this.getReadableDatabase();
+        AlarmModel alarm;
 
         String query =
-                "SELECT * FROM " + TABLE_NAME + "WHERE " + COLUMN_NAME_ID + "=" + id;
+                "SELECT * FROM " + TABLE_NAME + " WHERE " + COLUMN_NAME_ID + " = " + id;
 
-        Cursor c = db.rawQuery(query,null);
+        SQLiteDatabase db = this.getReadableDatabase();
 
-        if (c.moveToNext()) {
-            return mapToModel(c);
+        if(db != null)
+        {
+            // check use query instead of rawQuery
+            Cursor c = db.rawQuery(query,null);
+
+            if (c != null && c.moveToNext()) {
+                alarm =  mapToModel(c);
+                c.close();
+                return alarm;
+            }
         }
 
         return null;
@@ -110,6 +121,8 @@ public class DbHelper extends SQLiteOpenHelper {
     {
         ContentValues contentValues = mapToDb(alarmModel);
         SQLiteDatabase db = this.getWritableDatabase();
+        // fechar a DB
+        Log.w("DB", "cheguei aqui");
         return db.insert(TABLE_NAME, null, contentValues);
     }
 
@@ -120,11 +133,14 @@ public class DbHelper extends SQLiteOpenHelper {
         return db.update(TABLE_NAME, contentValues, COLUMN_NAME_ID + " = ?", new String[] { String.valueOf(alarmModel.getId()) });
     }
 
-    public int deleteAlarm(long id)
+    public int deleteAlarm(int id)
     {
         SQLiteDatabase db = this.getWritableDatabase();
-        return db.delete(TABLE_NAME, COLUMN_NAME_ID + " = " + id, null);
-
+        if (db != null)
+        {
+            return db.delete(TABLE_NAME, COLUMN_NAME_ID + " = ?", new String[] { String.valueOf(id) });
+        }
+        return 1; // SQLITE ERROR CODE?
     }
 
     //endregion
@@ -133,6 +149,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     private AlarmModel mapToModel(Cursor c)
     {
+        // guardar num static os columnsIndex
         AlarmModel alarmModel = new AlarmModel();
         alarmModel.setId(c.getInt(c.getColumnIndex(COLUMN_NAME_ID)));
         alarmModel.setName(c.getString(c.getColumnIndex(COLUMN_NAME_NAME)));
