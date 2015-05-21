@@ -20,6 +20,7 @@ import com.example.kwamecorp.myalarmclock.models.AlarmModel;
 import com.example.kwamecorp.myalarmclock.services.AlarmService;
 
 import java.util.Calendar;
+import java.util.Random;
 
 
 public class AlarmDetailActivity extends AppCompatActivity {
@@ -31,8 +32,6 @@ public class AlarmDetailActivity extends AppCompatActivity {
     //endregion
 
     //region Properties
-
-    private DbHelper dbHelper = new DbHelper(this);
     private AlarmModel alarmModel;
 
     //region Layout Items
@@ -53,8 +52,6 @@ public class AlarmDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_alarm_detail);
-//        getSupportActionBar().setTitle(R.string.alarm_detail_title);
-//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         setLayout();
         setListeners();
@@ -101,7 +98,7 @@ public class AlarmDetailActivity extends AppCompatActivity {
 
         int id = getIntent().getExtras().getInt("id");
         if (id > 0) {
-            alarmModel = dbHelper.getAlarm(id);
+            alarmModel = DbHelper.getInstance(this).getAlarm(id);
             bindLayoutFromModel();
         }
 
@@ -148,22 +145,22 @@ public class AlarmDetailActivity extends AppCompatActivity {
 
         if(alarmModel.getId() > 0)
         {
-            dbHelper.updateAlarm(alarmModel);
+            DbHelper.getInstance(this).updateAlarm(alarmModel);
         }else
         {
-            dbHelper.createAlarm(alarmModel);
+            DbHelper.getInstance(this).createAlarm(alarmModel);
         }
 
 
         // Set Alarm Manager - vai passar para outro lado
         Intent i = new Intent(getApplicationContext(), AlarmService.class);
+        i.putExtra("uri", alarmModel.getRingtone().toString());
 
-        PendingIntent pi = PendingIntent.getService(getApplicationContext(), 0, i, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pi = PendingIntent.getService(this, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
 
-        AlarmManager am = (AlarmManager) getApplicationContext().getSystemService(Context.ALARM_SERVICE);
+        AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
 
         am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pi); //Colocar o time correcto
-
     }
 
     private void bindModelFromLayout()
@@ -187,7 +184,6 @@ public class AlarmDetailActivity extends AppCompatActivity {
         alarmModel.setRingtone(ringtoneUri);
 
         textRingtoneUri.setText(RingtoneManager.getRingtone(this, alarmModel.getRingtone()).getTitle(this));
-
     }
 
     //endregion

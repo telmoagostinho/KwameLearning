@@ -18,6 +18,8 @@ import java.util.List;
  */
 public class DbHelper extends SQLiteOpenHelper {
 
+    private static DbHelper dbInstance;
+
     //region Constants
     private static final String DATABASE_NAME = "myalarmclock.db";
     private static final int DATABASE_VERSION = 1;
@@ -42,12 +44,11 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String SQL_DELETE_ALARM_TABLE =
             "DROP TABLE IF EXISTS " + TABLE_NAME;
 
-
     //endregion
 
     //region Constructor
-
-    public DbHelper(Context context) {
+    //Made private to prevent direct instantiation
+    private DbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -68,7 +69,15 @@ public class DbHelper extends SQLiteOpenHelper {
 
     //endregion
 
-    //region Public Methods (CRUD)
+    //region Public Methods
+
+    public static synchronized DbHelper getInstance(Context context) {
+        if (dbInstance == null) {
+            dbInstance = new DbHelper(context.getApplicationContext());
+        }
+        return dbInstance;
+    }
+
 
     public ArrayList<AlarmModel> getAlarms(){
 
@@ -90,6 +99,7 @@ public class DbHelper extends SQLiteOpenHelper {
            }
 
            c.close();
+           db.close();
        }
 
         return alarmModels;
@@ -121,38 +131,45 @@ public class DbHelper extends SQLiteOpenHelper {
 
     public long createAlarm(AlarmModel alarmModel)
     {
+        long returnValue = 1;// SQLITE ERROR CODE?
         ContentValues contentValues = mapToDb(alarmModel);
         SQLiteDatabase db = this.getWritableDatabase();
         if (db != null) {
-
-            return db.insert(TABLE_NAME, null, contentValues);
+            returnValue = db.insert(TABLE_NAME, null, contentValues);
+            db.close();
         }
-
-        return 1; // SQLITE ERROR CODE?
+        return returnValue;
     }
 
     public long updateAlarm(AlarmModel alarmModel)
     {
+        long returnValue = 1;// SQLITE ERROR CODE?
+
         ContentValues contentValues = mapToDb(alarmModel);
 
         SQLiteDatabase db = this.getWritableDatabase();
 
         if (db != null) {
 
-            return db.update(TABLE_NAME, contentValues, COLUMN_NAME_ID + " = ?", new String[]{String.valueOf(alarmModel.getId())});
+            returnValue = db.update(TABLE_NAME, contentValues, COLUMN_NAME_ID + " = ?", new String[]{String.valueOf(alarmModel.getId())});
+            db.close();
         }
 
-        return 1; // SQLITE ERROR CODE?
+        return returnValue;
     }
 
     public int deleteAlarm(int id)
     {
+        int returnValue = 1;// SQLITE ERROR CODE?
+
         SQLiteDatabase db = this.getWritableDatabase();
         if (db != null)
         {
-            return db.delete(TABLE_NAME, COLUMN_NAME_ID + " = ?", new String[] { String.valueOf(id) });
+            returnValue = db.delete(TABLE_NAME, COLUMN_NAME_ID + " = ?", new String[] { String.valueOf(id) });
+            db.close();
         }
-        return 1; // SQLITE ERROR CODE?
+
+        return returnValue; // SQLITE ERROR CODE?
     }
 
     //endregion

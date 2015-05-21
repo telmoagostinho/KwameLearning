@@ -1,5 +1,6 @@
 package com.example.kwamecorp.myalarmclock;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -7,12 +8,13 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
+import com.example.kwamecorp.myalarmclock.components.ListViewCell;
 import com.example.kwamecorp.myalarmclock.helpers.AlarmAdapter;
 import com.example.kwamecorp.myalarmclock.helpers.DbHelper;
 import com.example.kwamecorp.myalarmclock.models.AlarmModel;
 
 
-public class AlarmListActivity extends  ActionBarActivity {
+public class AlarmListActivity extends Activity implements ListViewCell.IListViewCellListener {
 
     //region Constants
 
@@ -22,7 +24,6 @@ public class AlarmListActivity extends  ActionBarActivity {
 
     //region Properties
 
-    private DbHelper dbHelper = new DbHelper(this);
     private AlarmAdapter adapter;
     private ListView listView;
 
@@ -36,34 +37,13 @@ public class AlarmListActivity extends  ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_list);
 
-//        getSupportActionBar().setTitle(R.string.alarm_list_title);
-
         listView = (ListView) findViewById(R.id.alarm_list_items);
 
         adapter = new AlarmAdapter(this, 0);
 
+        adapter.setListener(this);
+
         listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-	        @Override
-	        public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-	        {
-		        AlarmModel alarmModel = adapter.getItem(position);
-		        openAlarmDetail(alarmModel.getId());
-	        }
-        });
-
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
-        {
-	        @Override
-	        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
-	        {
-		        AlarmModel alarmModel = adapter.getItem(position);
-		        deleteAlarm(alarmModel.getId());
-		        return true;
-	        }
-        });
 
 	    findViewById(R.id.addAlarmFAB).setOnClickListener(new View.OnClickListener()
 	    {
@@ -81,15 +61,8 @@ public class AlarmListActivity extends  ActionBarActivity {
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
         if (resultCode == RESULT_OK) {
             reLoadList();
         }
@@ -109,7 +82,7 @@ public class AlarmListActivity extends  ActionBarActivity {
 
     public void deleteAlarm(int id)
     {
-        dbHelper.deleteAlarm(id);
+        DbHelper.getInstance(this).deleteAlarm(id);
         reLoadList();
     }
 
@@ -121,8 +94,18 @@ public class AlarmListActivity extends  ActionBarActivity {
     private void reLoadList()
     {
         adapter.clear();
-        adapter.addAll(dbHelper.getAlarms());
+        adapter.addAll(DbHelper.getInstance(this).getAlarms());
         adapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void deleteAlarm(AlarmModel alarm) {
+        deleteAlarm(alarm.getId());
+    }
+
+    @Override
+    public void openAlarmDetail(AlarmModel alarm) {
+        openAlarmDetail(alarm.getId());
     }
 
     //endregion

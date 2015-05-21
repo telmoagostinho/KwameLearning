@@ -26,11 +26,9 @@ public class AlarmService extends IntentService {
     @Override
     protected void onHandleIntent(Intent intent) {
 
-        Log.w("KW", "Chamei o intent service");
-
-
         Intent i = new Intent(getBaseContext(), AlarmRingerActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        i.putExtras(intent);
         startActivity(i);
 
     }

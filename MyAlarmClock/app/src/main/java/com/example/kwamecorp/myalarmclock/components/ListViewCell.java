@@ -9,6 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.kwamecorp.myalarmclock.R;
+import com.example.kwamecorp.myalarmclock.helpers.AlarmAdapter;
 import com.example.kwamecorp.myalarmclock.helpers.DbHelper;
 import com.example.kwamecorp.myalarmclock.models.AlarmModel;
 
@@ -23,6 +24,7 @@ public class ListViewCell extends FrameLayout{
     private TextView textDays;
     private ImageButton editBtn, removeBtn;
     private AlarmModel mAlarm;
+    private IListViewCellListener listener;
 
     public ListViewCell(Context context) {
         super(context);
@@ -40,25 +42,23 @@ public class ListViewCell extends FrameLayout{
         editBtn = (ImageButton) findViewById(R.id.editBtn);
         removeBtn = (ImageButton) findViewById(R.id.removeBtn);
 
-        editBtn.setOnClickListener(new OnClickListener()
-        {
+        editBtn.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
+
+                listener.openAlarmDetail(mAlarm);
+
                 //TODO: inject edit code here
                 Toast.makeText(getContext(), "TODO: inject edit code here", Toast.LENGTH_LONG).show();
             }
         });
 
-        removeBtn.setOnClickListener(new OnClickListener()
-        {
+        removeBtn.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                if (mAlarm != null)
-                {
+            public void onClick(View v) {
+                if (mAlarm != null) {
                     // TODO: DbHelper should be singleton to avoid multiple instances inside same app/thread
-                    new DbHelper(getContext()).deleteAlarm(mAlarm.getId());
+                    listener.deleteAlarm(mAlarm);
                     // TODO: notify UI that something happened
                 }
             }
@@ -74,6 +74,16 @@ public class ListViewCell extends FrameLayout{
     }
 
 
+    public void setListener(IListViewCellListener listener) {
+        this.listener = listener;
+    }
+
+    public interface IListViewCellListener
+    {
+        void deleteAlarm(AlarmModel alarm);
+
+        void openAlarmDetail(AlarmModel alarm);
+    }
 }
 
 

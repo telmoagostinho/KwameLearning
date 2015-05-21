@@ -22,6 +22,7 @@ import java.util.List;
 public class AlarmAdapter extends ArrayAdapter<AlarmModel> {
 
     private final Context context;
+    private ListViewCell.IListViewCellListener listener;
 
 
     public AlarmAdapter(Context context, int resource) {
@@ -35,6 +36,7 @@ public class AlarmAdapter extends ArrayAdapter<AlarmModel> {
 
         if (convertView == null) {
             convertView = new ListViewCell(this.context);
+            ((ListViewCell)convertView).setListener(this.listener);
         }
 
         ((ListViewCell)convertView).setData(getItem(position));
@@ -42,4 +44,13 @@ public class AlarmAdapter extends ArrayAdapter<AlarmModel> {
         return convertView;
     }
 
+    public void setListener(ListViewCell.IListViewCellListener listener)
+    {
+        this.listener = listener;
+    }
+
+
+
 }
+
+
