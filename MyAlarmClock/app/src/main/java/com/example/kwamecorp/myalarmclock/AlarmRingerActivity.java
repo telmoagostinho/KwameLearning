@@ -10,7 +10,9 @@ import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
 
 import java.io.IOException;
 
@@ -71,7 +73,16 @@ public class AlarmRingerActivity extends Activity {
 
     private void init()
     {
-        
+
+        Button btnShutDown = (Button) findViewById(R.id.action_shutdown_alarm);
+        btnShutDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMediaPlayer.stop();
+                finish();
+            }
+        });
+
 
 
         String ringtone = getIntent().getStringExtra("uri");
