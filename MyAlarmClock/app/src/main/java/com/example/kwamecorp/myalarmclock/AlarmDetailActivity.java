@@ -10,8 +10,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -42,6 +40,7 @@ public class AlarmDetailActivity extends AppCompatActivity {
     private TimePicker timePicker;
     private EditText textName;
     private TextView textRingtoneUri;
+    private View saveAlarmFAB;
 
     //endregion
 
@@ -54,37 +53,11 @@ public class AlarmDetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_alarm_detail);
-        getSupportActionBar().setTitle(R.string.alarm_detail_title);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//        getSupportActionBar().setTitle(R.string.alarm_detail_title);
+//        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         setLayout();
         setListeners();
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_alarm_detail, menu);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-
-        switch (item.getItemId()) {
-            case android.R.id.home: {
-                finish();
-                break;
-            }
-            case R.id.action_save_alarm: {
-                saveAlarm();
-                setResult(RESULT_OK);
-                finish();
-            }
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     //region Activity Result
@@ -122,6 +95,7 @@ public class AlarmDetailActivity extends AppCompatActivity {
         timePicker = (TimePicker) findViewById(R.id.alarm_detail_time_picker);
         timePicker.setIs24HourView(true);
         timePicker.setCurrentHour(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
+        saveAlarmFAB = findViewById(R.id.saveAlarmFAB);
 
         alarmModel = new AlarmModel();
 
@@ -140,6 +114,17 @@ public class AlarmDetailActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(RingtoneManager.ACTION_RINGTONE_PICKER);
                 startActivityForResult(intent, REQ_CODE_PICK_RINGTONE);
+            }
+        });
+
+        saveAlarmFAB.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                saveAlarm();
+                setResult(RESULT_OK);
+                finish();
             }
         });
 

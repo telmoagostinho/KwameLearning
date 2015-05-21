@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<color name="white">#fafafa</color>
+	<color name="blue_semi_transparent">#805677fc</color>
+	<color name="blue_semi_transparent_pressed">#80738ffe</color>
+	<color name="green_semi_transparent">#8056fc77</color>
+	<color name="green_semi_transparent_pressed">#8073fe8f</color>
+</resources>

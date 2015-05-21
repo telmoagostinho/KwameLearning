@@ -1,25 +1,15 @@
 package com.example.kwamecorp.myalarmclock;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.app.ActionBarActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.TimePicker;
 
-import com.example.kwamecorp.myalarmclock.components.ListViewCell;
 import com.example.kwamecorp.myalarmclock.helpers.AlarmAdapter;
 import com.example.kwamecorp.myalarmclock.helpers.DbHelper;
 import com.example.kwamecorp.myalarmclock.models.AlarmModel;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class AlarmListActivity extends  ActionBarActivity {
@@ -46,7 +36,7 @@ public class AlarmListActivity extends  ActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_list);
 
-        getSupportActionBar().setTitle(R.string.alarm_list_title);
+//        getSupportActionBar().setTitle(R.string.alarm_list_title);
 
         listView = (ListView) findViewById(R.id.alarm_list_items);
 
@@ -54,50 +44,40 @@ public class AlarmListActivity extends  ActionBarActivity {
 
         listView.setAdapter(adapter);
 
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                AlarmModel alarmModel = adapter.getItem(position);
-                openAlarmDetail(alarmModel.getId());
-            }
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+	        @Override
+	        public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+	        {
+		        AlarmModel alarmModel = adapter.getItem(position);
+		        openAlarmDetail(alarmModel.getId());
+	        }
         });
 
-        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                AlarmModel alarmModel = adapter.getItem(position);
-                deleteAlarm(alarmModel.getId());
-                return true;
-            }
+        listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
+        {
+	        @Override
+	        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
+	        {
+		        AlarmModel alarmModel = adapter.getItem(position);
+		        deleteAlarm(alarmModel.getId());
+		        return true;
+	        }
         });
+
+	    findViewById(R.id.addAlarmFAB).setOnClickListener(new View.OnClickListener()
+	    {
+		    @Override
+		    public void onClick(View v)
+		    {
+			    Intent intent = new Intent(getApplicationContext(), AlarmDetailActivity.class);
+			    intent.putExtra("id", 0);
+			    startActivityForResult(intent, REQ_CODE_ALARM_DETAIL);
+		    }
+	    });
 
         reLoadList();
 
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_alarm_list, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_add_alarm) {
-            Intent intent = new Intent(this,
-                    AlarmDetailActivity.class);
-            intent.putExtra("id", 0);
-            startActivityForResult(intent, REQ_CODE_ALARM_DETAIL);
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
