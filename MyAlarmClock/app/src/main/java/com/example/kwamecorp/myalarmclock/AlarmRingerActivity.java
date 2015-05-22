@@ -20,13 +20,16 @@ import android.view.WindowManager;
 import android.widget.Button;
 import java.io.IOException;
 
-public class AlarmRingerActivity extends Activity {
+public class AlarmRingerActivity extends Activity implements AlarmStatusChecker.AlarmStatusCheckerCallback
+{
 
     //region Properties
     private WakeLock mWakeLock;
     private MediaPlayer mMediaPlayer;
     private String mRingtone;
     private int mId;
+    private AlarmStatusChecker mAlarmStatusChecker;
+    private boolean mButtonPressed = false;
     //endregion
 
 
@@ -82,7 +85,7 @@ public class AlarmRingerActivity extends Activity {
     }
 
     private boolean isAlarmStillRunning() {
-        return false;
+        return !mButtonPressed;
     }
 
     //endregion
@@ -111,7 +114,9 @@ public class AlarmRingerActivity extends Activity {
             }
         });
 
-
+        mAlarmStatusChecker = new AlarmStatusChecker();
+        mAlarmStatusChecker.setListener(this);
+        mAlarmStatusChecker.start(this);
 
         mRingtone = Settings.System.DEFAULT_RINGTONE_URI.toString(); // getIntent().getStringExtra("uri");
         mId = getIntent().getIntExtra("id", 0);
@@ -123,7 +128,7 @@ public class AlarmRingerActivity extends Activity {
             try {
                 mMediaPlayer.setDataSource(this, ringtoneUri);
                 mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
-                mMediaPlayer.setVolume(0.1f, 0.1f);
+                mMediaPlayer.setVolume(1f, 1f);
                 mMediaPlayer.setLooping(true);
                 mMediaPlayer.prepare();
                 mMediaPlayer.start();
@@ -132,6 +137,14 @@ public class AlarmRingerActivity extends Activity {
             }
         }
 
+    }
+
+    @Override
+    public void onButtonPressed()
+    {
+        mButtonPressed = true;
+        mMediaPlayer.stop();
+        finish();
     }
 
 
