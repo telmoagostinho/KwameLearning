@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 /**
  * Created by kwamecorp on 5/22/15.
@@ -20,19 +21,41 @@ public class AlarmManagerReceiver extends BroadcastReceiver {
         setAllAlarms(context);
     }
 
-
     public static void setAlarm(Context context, AlarmModel alarm){
-        Calendar calendar = Calendar.getInstance();
 
-        calendar.set(Calendar.HOUR_OF_DAY, alarm.getHour());
-        calendar.set(Calendar.MINUTE, alarm.getMinutes());
-        calendar.set(Calendar.SECOND, 0);
+        Calendar alarmCalendar = Calendar.getInstance();
 
-        PendingIntent pi = setPendingIntent(context, alarm);
+        alarmCalendar.set(Calendar.HOUR_OF_DAY, alarm.getHour());
+        alarmCalendar.set(Calendar.MINUTE, alarm.getMinutes());
+        alarmCalendar.set(Calendar.SECOND, 0);
 
-        AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        final int currentDay = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+        final int currentHour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        final int currentMinute = Calendar.getInstance().get(Calendar.MINUTE);
 
-        am.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pi);
+        for (int dayOfWeek = Calendar.SUNDAY; dayOfWeek <= Calendar.SATURDAY; ++dayOfWeek) {
+            if (alarm.getRepeatingDay(dayOfWeek - 1) && dayOfWeek >= currentDay &&
+                    !(dayOfWeek == currentDay && alarm.getHour() < currentHour) &&
+                    !(dayOfWeek == currentDay && alarm.getHour() == currentHour && alarm.getMinutes() <= currentMinute))
+            {
+                Log.w("KW", "Entrei aqui");
+
+                alarmCalendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
+
+                PendingIntent pi = setPendingIntent(context, alarm);
+                AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                am.set(AlarmManager.RTC_WAKEUP, alarmCalendar.getTimeInMillis(), pi);
+
+            }
+            else{
+                alarmCalendar.set(Calendar.DAY_OF_WEEK, dayOfWeek);
+                alarmCalendar.add(Calendar.WEEK_OF_YEAR, 1);
+
+                PendingIntent pi = setPendingIntent(context, alarm);
+                AlarmManager am = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                am.set(AlarmManager.RTC_WAKEUP, alarmCalendar.getTimeInMillis(), pi);
+            }
+        }
     }
 
     public static void cancelAlarm(Context context, AlarmModel alarm){
@@ -44,7 +67,7 @@ public class AlarmManagerReceiver extends BroadcastReceiver {
         am.cancel(pi);
     }
 
-    public static void setAllAlarms(Context context){
+    public static void setAllAlarms(Context context) {
         cancelAllAlarms(context);
 
         List<AlarmModel> alarms = DbHelper.getInstance(context).getAlarms();

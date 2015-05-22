@@ -92,10 +92,9 @@ public class AlarmRingerActivity extends Activity {
             public void onClick(View v) {
                 mMediaPlayer.stop();
                 int alarmId = getIntent().getIntExtra("id", 0);
-                AlarmManagerReceiver.setAlarm(getApplicationContext(), DbHelper.getInstance(getApplicationContext()).getAlarm(alarmId));
+               // TODO + 5 mins,  AlarmManagerReceiver.setAlarm(getApplicationContext(), DbHelper.getInstance(getApplicationContext()).getAlarm(alarmId));
             }
         });
-
 
 
         String ringtone = getIntent().getStringExtra("uri");

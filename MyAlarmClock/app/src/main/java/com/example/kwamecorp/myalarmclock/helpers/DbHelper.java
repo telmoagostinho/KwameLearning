@@ -22,7 +22,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
     //region Constants
     private static final String DATABASE_NAME = "myalarmclock.db";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public static final String TABLE_NAME = "alarms";
     public static final String COLUMN_NAME_ID = "_id";
@@ -30,6 +30,7 @@ public class DbHelper extends SQLiteOpenHelper {
     public static final String COLUMN_NAME_HOUR = "hour";
     public static final String COLUMN_NAME_MINUTES = "minutes";
     public static final String COLUMN_NAME_RINGTONE = "ringtone";
+    public static final String COLUMN_NAME_REPEAT_DAYS = "repeatdays";
     public static final String COLUMN_NAME_ENABLED = "enabled";
 
     private static final String SQL_CREATE_ALARM_TABLE =
@@ -38,6 +39,7 @@ public class DbHelper extends SQLiteOpenHelper {
                     COLUMN_NAME_NAME + " TEXT," +
                     COLUMN_NAME_HOUR + " INTEGER," +
                     COLUMN_NAME_MINUTES + " INTEGER," +
+                    COLUMN_NAME_REPEAT_DAYS + " TEXT," +
                     COLUMN_NAME_RINGTONE + " TEXT," +
                     COLUMN_NAME_ENABLED + " BOOLEAN" + " )";
 
@@ -188,6 +190,11 @@ public class DbHelper extends SQLiteOpenHelper {
         String ringtoneUri = c.getString(c.getColumnIndex(COLUMN_NAME_RINGTONE));
         alarmModel.setRingtone(Uri.parse(ringtoneUri));
 
+        String[] days = c.getString(c.getColumnIndex(COLUMN_NAME_REPEAT_DAYS)).split(",");
+        for (int i = 0; i < days.length; ++i) {
+            alarmModel.setRepeatingDay(i, days[i].equals("true") ? true : false);
+        }
+
         return alarmModel;
     }
 
@@ -199,6 +206,12 @@ public class DbHelper extends SQLiteOpenHelper {
         contentValues.put(COLUMN_NAME_ENABLED, alarmModel.getIsEnabled());
         contentValues.put(COLUMN_NAME_HOUR, alarmModel.getHour());
         contentValues.put(COLUMN_NAME_MINUTES, alarmModel.getMinutes());
+
+        String repeatDays = "";
+        for (int i = 0; i < 7; ++i) {
+            repeatDays += alarmModel.getRepeatingDay(i) + ",";
+        }
+        contentValues.put(COLUMN_NAME_REPEAT_DAYS, repeatDays);
 
         return contentValues;
     }

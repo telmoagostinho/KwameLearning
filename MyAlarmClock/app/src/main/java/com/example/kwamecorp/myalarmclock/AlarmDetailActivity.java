@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -23,7 +24,6 @@ import com.example.kwamecorp.myalarmclock.services.AlarmService;
 
 import java.util.Calendar;
 import java.util.Random;
-
 
 public class AlarmDetailActivity extends AppCompatActivity {
 
@@ -103,10 +103,10 @@ public class AlarmDetailActivity extends AppCompatActivity {
         chkMonday = (CheckBox) findViewById(R.id.alarm_detail_chk_monday);
         chkTuesday = (CheckBox) findViewById(R.id.alarm_detail_chk_tuesday);
         chkWednesday = (CheckBox) findViewById(R.id.alarm_detail_chk_wednesday);
-        chkThursday = (CheckBox) findViewById(R.id.alarm_detail_chk_monday);
-        chkFriday = (CheckBox) findViewById(R.id.alarm_detail_chk_monday);
-        chkSaturday = (CheckBox) findViewById(R.id.alarm_detail_chk_monday);
-        chkSunday = (CheckBox) findViewById(R.id.alarm_detail_chk_monday);
+        chkThursday = (CheckBox) findViewById(R.id.alarm_detail_chk_thursday);
+        chkFriday = (CheckBox) findViewById(R.id.alarm_detail_chk_friday);
+        chkSaturday = (CheckBox) findViewById(R.id.alarm_detail_chk_saturday);
+        chkSunday = (CheckBox) findViewById(R.id.alarm_detail_chk_sunday);
         saveAlarmFAB = findViewById(R.id.saveAlarmFAB);
 
         alarmModel = new AlarmModel();
@@ -128,11 +128,9 @@ public class AlarmDetailActivity extends AppCompatActivity {
             }
         });
 
-        saveAlarmFAB.setOnClickListener(new View.OnClickListener()
-        {
+        saveAlarmFAB.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 saveAlarm();
                 setResult(RESULT_OK);
                 finish();
@@ -145,33 +143,54 @@ public class AlarmDetailActivity extends AppCompatActivity {
         textName.setText(alarmModel.getName());
         timePicker.setCurrentHour(alarmModel.getHour());
         timePicker.setCurrentMinute(alarmModel.getMinutes());
+        chkMonday.setChecked(alarmModel.getRepeatingDay(AlarmModel.MONDAY));
+        chkTuesday.setChecked(alarmModel.getRepeatingDay(AlarmModel.TUESDAY));
+        chkWednesday.setChecked(alarmModel.getRepeatingDay(AlarmModel.WEDNESDAY));
+        chkThursday.setChecked(alarmModel.getRepeatingDay(AlarmModel.THURSDAY));
+        chkFriday.setChecked(alarmModel.getRepeatingDay(AlarmModel.FRIDAY));
+        chkSaturday.setChecked(alarmModel.getRepeatingDay(AlarmModel.SATURDAY));
+        chkSunday.setChecked(alarmModel.getRepeatingDay(AlarmModel.SUNDAY));
+        textRingtoneUri.setText(RingtoneManager.getRingtone(this, alarmModel.getRingtone()).getTitle(this));
 
-        // more to do
     }
 
     private void saveAlarm()
     {
         bindModelFromLayout();
 
+
         if(alarmModel.getId() > 0)
         {
             DbHelper.getInstance(this).updateAlarm(alarmModel);
-        }else
+        }
+        else
         {
             DbHelper.getInstance(this).createAlarm(alarmModel);
         }
 
-        AlarmManagerReceiver.setAlarm(getApplicationContext(), alarmModel);
+        AlarmManagerReceiver.setAlarm(this, alarmModel);
     }
 
     private void bindModelFromLayout()
     {
-        alarmModel.setHour(timePicker.getCurrentHour().intValue());
-        alarmModel.setMinutes(timePicker.getCurrentMinute().intValue());
+
         alarmModel.setName(textName.getText().toString());
 
+        alarmModel.setHour(timePicker.getCurrentHour().intValue());
+        alarmModel.setMinutes(timePicker.getCurrentMinute().intValue());
+        alarmModel.setRepeatingDay(AlarmModel.MONDAY, chkMonday.isChecked());
+        alarmModel.setRepeatingDay(AlarmModel.TUESDAY, chkTuesday.isChecked());
+        alarmModel.setRepeatingDay(AlarmModel.WEDNESDAY, chkWednesday.isChecked());
+        alarmModel.setRepeatingDay(AlarmModel.THURSDAY, chkThursday.isChecked());
+        alarmModel.setRepeatingDay(AlarmModel.FRIDAY, chkFriday.isChecked());
+        alarmModel.setRepeatingDay(AlarmModel.SATURDAY, chkSaturday.isChecked());
+        alarmModel.setRepeatingDay(AlarmModel.SUNDAY, chkSunday.isChecked());
         alarmModel.setIsEnabled(true);
 
+        if(alarmModel.getRingtone() == null)
+        {
+            alarmModel.setRingtone(Settings.System.DEFAULT_RINGTONE_URI);
+        }
     }
 
     private void setRingtone(Intent data)

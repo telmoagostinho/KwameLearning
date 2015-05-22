@@ -43,21 +43,81 @@
 				android:layout_margin="12dp"
 				android:ellipsize="end"
 				android:maxLines="1"
-				android:text="Time"
+				android:text="Id"
 				android:textAppearance="@android:style/TextAppearance.Large"/>
 
 		</LinearLayout>
 
+		<LinearLayout
+			android:layout_width="wrap_content"
+			android:layout_height="wrap_content"
+			android:orientation="horizontal">
+
 		<TextView
 			android:layout_gravity="top"
-			android:id="@+id/alarm_list_item_days"
+			android:id="@+id/alarm_list_item_monday"
 			android:layout_width="match_parent"
 			android:layout_height="wrap_content"
-			android:layout_margin="12dp"
+			android:paddingLeft="12dp"
+			android:layout_margin="7dp"
 			android:ellipsize="end"
 			android:maxLines="1"
-			android:text="M T W T F S S"/>
-
+			android:text="M"/>
+		<TextView
+			android:layout_gravity="top"
+			android:id="@+id/alarm_list_item_tuesday"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="7dp"
+			android:ellipsize="end"
+			android:maxLines="1"
+			android:text="T"/>
+		<TextView
+			android:layout_gravity="top"
+			android:id="@+id/alarm_list_item_wednesday"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="7dp"
+			android:ellipsize="end"
+			android:maxLines="1"
+			android:text="W"/>
+		<TextView
+			android:layout_gravity="top"
+			android:id="@+id/alarm_list_item_thursday"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="7dp"
+			android:ellipsize="end"
+			android:maxLines="1"
+			android:text="T"/>
+		<TextView
+			android:layout_gravity="top"
+			android:id="@+id/alarm_list_item_friday"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="7dp"
+			android:ellipsize="end"
+			android:maxLines="1"
+			android:text="F"/>
+		<TextView
+			android:layout_gravity="top"
+			android:id="@+id/alarm_list_item_saturday"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="7dp"
+			android:ellipsize="end"
+			android:maxLines="1"
+			android:text="S"/>
+		<TextView
+			android:layout_gravity="top"
+			android:id="@+id/alarm_list_item_sunday"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_margin="7dp"
+			android:ellipsize="end"
+			android:maxLines="1"
+			android:text="S"/>
+		</LinearLayout>
 	</LinearLayout>
 
 	<ImageButton

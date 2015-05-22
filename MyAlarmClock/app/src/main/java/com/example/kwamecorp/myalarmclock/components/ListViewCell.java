@@ -1,6 +1,7 @@
 package com.example.kwamecorp.myalarmclock.components;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -21,7 +22,14 @@ public class ListViewCell extends FrameLayout{
     private TextView textName;
     private TextView textTime;
     private TextView textId;
-    private TextView textDays;
+    private TextView textDayMonday;
+    private TextView textDayTuesday;
+    private TextView textDayWednesday;
+    private TextView textDayThursday;
+    private TextView textDayFriday;
+    private TextView textDaySaturday;
+    private TextView textDaySunday;
+
     private ImageButton editBtn, removeBtn;
     private AlarmModel mAlarm;
     private IListViewCellListener listener;
@@ -38,7 +46,13 @@ public class ListViewCell extends FrameLayout{
         textName = (TextView) findViewById(R.id.alarm_list_item_name);
         textTime = (TextView) findViewById(R.id.alarm_list_item_time);
         textId = (TextView) findViewById(R.id.alarm_list_item_id);
-        textDays = (TextView) findViewById(R.id.alarm_list_item_days);
+        textDayMonday = (TextView) findViewById(R.id.alarm_list_item_monday);
+        textDayTuesday = (TextView) findViewById(R.id.alarm_list_item_tuesday);
+        textDayWednesday = (TextView) findViewById(R.id.alarm_list_item_wednesday);
+        textDayThursday = (TextView) findViewById(R.id.alarm_list_item_thursday);
+        textDayFriday = (TextView) findViewById(R.id.alarm_list_item_friday);
+        textDaySaturday = (TextView) findViewById(R.id.alarm_list_item_saturday);
+        textDaySunday= (TextView) findViewById(R.id.alarm_list_item_sunday);
         editBtn = (ImageButton) findViewById(R.id.editBtn);
         removeBtn = (ImageButton) findViewById(R.id.removeBtn);
 
@@ -47,9 +61,6 @@ public class ListViewCell extends FrameLayout{
             public void onClick(View v) {
 
                 listener.openAlarmDetail(mAlarm);
-
-                //TODO: inject edit code here
-                Toast.makeText(getContext(), "TODO: inject edit code here", Toast.LENGTH_LONG).show();
             }
         });
 
@@ -57,7 +68,7 @@ public class ListViewCell extends FrameLayout{
             @Override
             public void onClick(View v) {
                 if (mAlarm != null) {
-                    // TODO: DbHelper should be singleton to avoid multiple instances inside same app/thread
+                    // TODO: confirm box
                     listener.deleteAlarm(mAlarm);
                     // TODO: notify UI that something happened
                 }
@@ -69,8 +80,15 @@ public class ListViewCell extends FrameLayout{
     {
         mAlarm = alarm;
         textName.setText(alarm.getName());
-        textTime.setText(alarm.getHour() + " : " + alarm.getMinutes());
+        textTime.setText(String.format("%02d : %02d", alarm.getHour(), alarm.getMinutes()));
         textId.setText(String.valueOf(alarm.getId()));
+        changeDayColor(textDayMonday, alarm.getRepeatingDay(AlarmModel.MONDAY));
+        changeDayColor(textDayTuesday, alarm.getRepeatingDay(AlarmModel.TUESDAY));
+        changeDayColor(textDayWednesday, alarm.getRepeatingDay(AlarmModel.WEDNESDAY));
+        changeDayColor(textDayThursday, alarm.getRepeatingDay(AlarmModel.THURSDAY));
+        changeDayColor(textDayFriday, alarm.getRepeatingDay(AlarmModel.FRIDAY));
+        changeDayColor(textDaySaturday, alarm.getRepeatingDay(AlarmModel.SATURDAY));
+        changeDayColor(textDaySunday, alarm.getRepeatingDay(AlarmModel.SUNDAY));
     }
 
 
@@ -83,6 +101,14 @@ public class ListViewCell extends FrameLayout{
         void deleteAlarm(AlarmModel alarm);
 
         void openAlarmDetail(AlarmModel alarm);
+    }
+
+    private void changeDayColor(TextView view, boolean isEnabled) {
+        if (isEnabled) {
+            view.setTextColor(Color.GREEN);
+        } else {
+            view.setTextColor(Color.BLACK);
+        }
     }
 }
 
