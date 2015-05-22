@@ -21,7 +21,8 @@
     <string name="title_activity_alarm_ringer">AlarmRingerActivity</string>
 
     <string name="alarm_ringer_title">BUZZZZZ!!!</string>
-    <string name="alarm_ringer_button_text">Turn off</string>
+    <string name="alarm_ringer_snooze_button_text">Snooze</string>
+    <string name="alarm_ringer_off_button_text">Turn off</string>
     <string name="action_settings">Settings</string>
 
 

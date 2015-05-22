@@ -14,6 +14,9 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
 
+import com.example.kwamecorp.myalarmclock.helpers.AlarmManagerReceiver;
+import com.example.kwamecorp.myalarmclock.helpers.DbHelper;
+
 import java.io.IOException;
 
 public class AlarmRingerActivity extends Activity {
@@ -80,6 +83,16 @@ public class AlarmRingerActivity extends Activity {
             public void onClick(View v) {
                 mMediaPlayer.stop();
                 finish();
+            }
+        });
+
+        Button btnSnooze = (Button) findViewById(R.id.action_snooze_alarm);
+        btnShutDown.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mMediaPlayer.stop();
+                int alarmId = getIntent().getIntExtra("id", 0);
+                AlarmManagerReceiver.setAlarm(getApplicationContext(), DbHelper.getInstance(getApplicationContext()).getAlarm(alarmId));
             }
         });
 

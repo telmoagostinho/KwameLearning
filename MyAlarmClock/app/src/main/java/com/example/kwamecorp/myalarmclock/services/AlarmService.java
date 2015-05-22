@@ -2,9 +2,10 @@ package com.example.kwamecorp.myalarmclock.services;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.util.Log;
 
 import com.example.kwamecorp.myalarmclock.AlarmRingerActivity;
+
+import java.io.IOException;
 
 /**
  * Created by kwamecorp on 5/15/15.

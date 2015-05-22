@@ -49,8 +49,6 @@ public class AlarmAdapter extends ArrayAdapter<AlarmModel> {
         this.listener = listener;
     }
 
-
-
 }
 
 

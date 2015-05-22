@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
+import com.example.kwamecorp.myalarmclock.helpers.AlarmManagerReceiver;
 import com.example.kwamecorp.myalarmclock.helpers.DbHelper;
 import com.example.kwamecorp.myalarmclock.models.AlarmModel;
 import com.example.kwamecorp.myalarmclock.services.AlarmService;
@@ -151,16 +152,8 @@ public class AlarmDetailActivity extends AppCompatActivity {
             DbHelper.getInstance(this).createAlarm(alarmModel);
         }
 
+        AlarmManagerReceiver.setAlarm(getApplicationContext(), alarmModel);
 
-        // Set Alarm Manager - vai passar para outro lado
-        Intent i = new Intent(getApplicationContext(), AlarmService.class);
-        i.putExtra("uri", alarmModel.getRingtone().toString());
-
-        PendingIntent pi = PendingIntent.getService(this, 0, i, PendingIntent.FLAG_CANCEL_CURRENT);
-
-        AlarmManager am = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
-
-        am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pi); //Colocar o time correcto
     }
 
     private void bindModelFromLayout()
