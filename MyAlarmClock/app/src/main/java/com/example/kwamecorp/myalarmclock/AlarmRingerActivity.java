@@ -32,6 +32,8 @@ public class AlarmRingerActivity extends Activity implements AlarmStatusChecker.
     private boolean mButtonPressed = false;
     //endregion
 
+    private boolean isPlaying = false;
+
 
     //region Overrides
     @Override
@@ -121,7 +123,7 @@ public class AlarmRingerActivity extends Activity implements AlarmStatusChecker.
         mRingtone = Settings.System.DEFAULT_RINGTONE_URI.toString(); // getIntent().getStringExtra("uri");
         mId = getIntent().getIntExtra("id", 0);
 
-        if(mRingtone != null && !mRingtone.isEmpty())
+        if(!isPlaying && mRingtone != null && !mRingtone.isEmpty())
         {
             mMediaPlayer = new MediaPlayer();
             Uri ringtoneUri = Uri.parse(mRingtone);
@@ -132,6 +134,7 @@ public class AlarmRingerActivity extends Activity implements AlarmStatusChecker.
                 mMediaPlayer.setLooping(true);
                 mMediaPlayer.prepare();
                 mMediaPlayer.start();
+                isPlaying = true;
             } catch (IOException e) {
                 e.printStackTrace();
             }
