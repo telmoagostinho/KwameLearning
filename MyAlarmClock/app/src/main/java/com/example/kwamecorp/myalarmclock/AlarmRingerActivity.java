@@ -12,6 +12,8 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
 import android.provider.Settings;
@@ -33,6 +35,9 @@ public class AlarmRingerActivity extends Activity implements AlarmStatusChecker.
     //endregion
 
     private boolean isPlaying = false;
+    private long mTimeSinceStartPlaying;
+    private HandlerThread handlerThread;
+    private Handler handler;
 
 
     //region Overrides
@@ -40,7 +45,8 @@ public class AlarmRingerActivity extends Activity implements AlarmStatusChecker.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_alarm_ringer);
-
+        handlerThread = new HandlerThread("timebomb");
+        handlerThread.start();
         init();
     }
 
@@ -135,6 +141,17 @@ public class AlarmRingerActivity extends Activity implements AlarmStatusChecker.
                 mMediaPlayer.prepare();
                 mMediaPlayer.start();
                 isPlaying = true;
+
+                handler = new Handler(handlerThread.getLooper());
+                handler.postDelayed(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        onButtonPressed();
+                    }
+                }, 60000);
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -148,6 +165,8 @@ public class AlarmRingerActivity extends Activity implements AlarmStatusChecker.
         mButtonPressed = true;
         mMediaPlayer.stop();
         finish();
+
+        handler.removeCallbacksAndMessages(null);
     }
 
 
