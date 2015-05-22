@@ -1,22 +1,23 @@
 package com.example.kwamecorp.myalarmclock;
 
+import com.example.kwamecorp.myalarmclock.helpers.AlarmManagerReceiver;
+import com.example.kwamecorp.myalarmclock.helpers.DbHelper;
+import com.example.kwamecorp.myalarmclock.services.AlarmService;
 import android.app.Activity;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.Bundle;
 import android.os.PowerManager;
 import android.os.PowerManager.WakeLock;
-import android.os.Bundle;
-import android.util.Log;
+import android.provider.Settings;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-
-import com.example.kwamecorp.myalarmclock.helpers.AlarmManagerReceiver;
-import com.example.kwamecorp.myalarmclock.helpers.DbHelper;
-
 import java.io.IOException;
 
 public class AlarmRingerActivity extends Activity {
@@ -24,6 +25,8 @@ public class AlarmRingerActivity extends Activity {
     //region Properties
     private WakeLock mWakeLock;
     private MediaPlayer mMediaPlayer;
+    private String mRingtone;
+    private int mId;
     //endregion
 
 
@@ -64,10 +67,22 @@ public class AlarmRingerActivity extends Activity {
             mWakeLock.release();
         }
 
-        if(mMediaPlayer != null)
-        {
-            mMediaPlayer.stop();
+        if(isAlarmStillRunning()){
+            Intent i = new Intent(this, AlarmService.class);
+            i.putExtra("id", mId);
+            i.putExtra("uri", mRingtone);
+
+            PendingIntent pi = PendingIntent.getService(this, mId, i,
+                    PendingIntent.FLAG_UPDATE_CURRENT);
+
+            AlarmManager am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+
+            am.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 5000, pi);
         }
+    }
+
+    private boolean isAlarmStillRunning() {
+        return false;
     }
 
     //endregion
@@ -98,12 +113,13 @@ public class AlarmRingerActivity extends Activity {
 
 
 
-        String ringtone = getIntent().getStringExtra("uri");
+        mRingtone = Settings.System.DEFAULT_RINGTONE_URI.toString(); // getIntent().getStringExtra("uri");
+        mId = getIntent().getIntExtra("id", 0);
 
-        if(ringtone != null && !ringtone.isEmpty())
+        if(mRingtone != null && !mRingtone.isEmpty())
         {
             mMediaPlayer = new MediaPlayer();
-            Uri ringtoneUri = Uri.parse(ringtone);
+            Uri ringtoneUri = Uri.parse(mRingtone);
             try {
                 mMediaPlayer.setDataSource(this, ringtoneUri);
                 mMediaPlayer.setAudioStreamType(AudioManager.STREAM_ALARM);
@@ -115,12 +131,6 @@ public class AlarmRingerActivity extends Activity {
                 e.printStackTrace();
             }
         }
-
-
-
-
-
-
 
     }
 
