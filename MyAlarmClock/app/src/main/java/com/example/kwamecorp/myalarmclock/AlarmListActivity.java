@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -13,12 +14,18 @@ import com.example.kwamecorp.myalarmclock.helpers.AlarmAdapter;
 import com.example.kwamecorp.myalarmclock.helpers.DbHelper;
 import com.example.kwamecorp.myalarmclock.models.AlarmModel;
 
+import retrofit.Callback;
+import retrofit.RestAdapter;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+
 
 public class AlarmListActivity extends Activity implements ListViewCell.IListViewCellListener {
 
     //region Constants
 
     private static final int REQ_CODE_ALARM_DETAIL = 1;
+    private static final String TAG = "ALARMCOCK";
 
     //endregion
 
@@ -26,6 +33,7 @@ public class AlarmListActivity extends Activity implements ListViewCell.IListVie
 
     private AlarmAdapter adapter;
     private ListView listView;
+    private AlarmServiceEndpoint alarmServiceEndpoint;
 
     //endregion
 
@@ -58,6 +66,7 @@ public class AlarmListActivity extends Activity implements ListViewCell.IListVie
 
         reLoadList();
 
+        new AlarmStatusChecker().start(this);
     }
 
     @Override
