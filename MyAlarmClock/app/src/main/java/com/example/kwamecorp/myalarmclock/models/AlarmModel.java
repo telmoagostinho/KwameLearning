@@ -7,14 +7,25 @@ import android.net.Uri;
  */
 public class AlarmModel {
 
+    public static final int MONDAY = 0;
+    public static final int TUESDAY = 1;
+    public static final int WEDNESDAY = 2;
+    public static final int THURSDAY = 3;
+    public static final int FRIDAY = 4;
+    public static final int SATURDAY = 5;
+    public static final int SUNDAY = 6;
+
     private int id;
     private String name;
     private int hour;
     private int minutes;
     private Uri ringtone;
     private boolean isEnabled;
+    private boolean repeatingDays[];
 
-
+    public AlarmModel() {
+        repeatingDays = new boolean[7];
+    }
 
     public int getId() {
         return id;
@@ -64,7 +75,11 @@ public class AlarmModel {
         this.isEnabled = isEnabled;
     }
 
-    // to be continued
+    public void setRepeatingDay(int weekDayIdx, boolean value) {
+        repeatingDays[weekDayIdx] = value;
+    }
 
-
+    public boolean getRepeatingDay(int weekDayIdx) {
+        return repeatingDays[weekDayIdx];
+    }
 }

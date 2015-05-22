@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -40,6 +41,13 @@ public class AlarmDetailActivity extends AppCompatActivity {
     private TimePicker timePicker;
     private EditText textName;
     private TextView textRingtoneUri;
+    private CheckBox chkMonday;
+    private CheckBox chkTuesday;
+    private CheckBox chkWednesday;
+    private CheckBox chkThursday;
+    private CheckBox chkFriday;
+    private CheckBox chkSaturday;
+    private CheckBox chkSunday;
     private View saveAlarmFAB;
 
     //endregion
@@ -76,7 +84,6 @@ public class AlarmDetailActivity extends AppCompatActivity {
                     Log.w("KW", "Activity Result default");
                     break;
             }
-
         }
     }
 
@@ -93,6 +100,13 @@ public class AlarmDetailActivity extends AppCompatActivity {
         timePicker = (TimePicker) findViewById(R.id.alarm_detail_time_picker);
         timePicker.setIs24HourView(true);
         timePicker.setCurrentHour(Calendar.getInstance().get(Calendar.HOUR_OF_DAY));
+        chkMonday = (CheckBox) findViewById(R.id.alarm_detail_chk_monday);
+        chkTuesday = (CheckBox) findViewById(R.id.alarm_detail_chk_tuesday);
+        chkWednesday = (CheckBox) findViewById(R.id.alarm_detail_chk_wednesday);
+        chkThursday = (CheckBox) findViewById(R.id.alarm_detail_chk_monday);
+        chkFriday = (CheckBox) findViewById(R.id.alarm_detail_chk_monday);
+        chkSaturday = (CheckBox) findViewById(R.id.alarm_detail_chk_monday);
+        chkSunday = (CheckBox) findViewById(R.id.alarm_detail_chk_monday);
         saveAlarmFAB = findViewById(R.id.saveAlarmFAB);
 
         alarmModel = new AlarmModel();
@@ -102,7 +116,6 @@ public class AlarmDetailActivity extends AppCompatActivity {
             alarmModel = DbHelper.getInstance(this).getAlarm(id);
             bindLayoutFromModel();
         }
-
     }
 
     private void setListeners()
@@ -125,7 +138,6 @@ public class AlarmDetailActivity extends AppCompatActivity {
                 finish();
             }
         });
-
     }
 
     private void bindLayoutFromModel()
@@ -135,13 +147,10 @@ public class AlarmDetailActivity extends AppCompatActivity {
         timePicker.setCurrentMinute(alarmModel.getMinutes());
 
         // more to do
-
     }
 
     private void saveAlarm()
     {
-        // Save to DB
-
         bindModelFromLayout();
 
         if(alarmModel.getId() > 0)
@@ -153,17 +162,13 @@ public class AlarmDetailActivity extends AppCompatActivity {
         }
 
         AlarmManagerReceiver.setAlarm(getApplicationContext(), alarmModel);
-
     }
 
     private void bindModelFromLayout()
     {
-
         alarmModel.setHour(timePicker.getCurrentHour().intValue());
         alarmModel.setMinutes(timePicker.getCurrentMinute().intValue());
         alarmModel.setName(textName.getText().toString());
-
-        // TODO Days
 
         alarmModel.setIsEnabled(true);
 

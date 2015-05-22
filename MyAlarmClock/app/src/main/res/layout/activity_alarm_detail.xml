@@ -53,7 +53,7 @@
 					android:text="@string/alarm_detail_label_repeat"
 					android:textSize="18sp"/>
 
-				<TextView
+				<!--<TextView
 					android:id="@+id/alarm_detail_label_all_week"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
@@ -66,13 +66,13 @@
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_alignBaseline="@+id/alarm_detail_label_all_week"
-					android:layout_alignParentRight="true"/>
+					android:layout_alignParentRight="true"/>-->
 
 				<TextView
 					android:id="@+id/alarm_detail_label_sunday"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
-					android:layout_below="@+id/alarm_detail_label_all_week"
+					android:layout_below="@+id/alarm_detail_repeat"
 					android:layout_marginTop="20dp"
 					android:text="@string/alarm_detail_label_sunday"/>
 
@@ -122,6 +122,7 @@
 					android:text="@string/alarm_detail_label_wednesday"/>
 
 				<CheckBox
+					android:id="@+id/alarm_detail_chk_wednesday"
 					android:layout_width="wrap_content"
 					android:layout_height="wrap_content"
 					android:layout_alignBaseline="@+id/alarm_detail_label_wednesday"
