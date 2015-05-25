@@ -13,6 +13,11 @@
         android:theme="@style/AppTheme"
         >
         <activity android:name=".AlarmListActivity" android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
         </activity>
         <activity android:name=".AlarmDetailActivity" >
         </activity>
@@ -24,11 +29,6 @@
         <activity
             android:name=".AlarmRingerActivity"
             android:label="@string/title_activity_alarm_ringer" android:screenOrientation="portrait" >
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
 
         <receiver
